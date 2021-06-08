@@ -48,12 +48,15 @@ friend BaseWeapon;
 	// forced weapon cooldown) occurs. Used for time-keeping.
 	TickType_t  action_start_tick;
 
+	TickType_t last_shot_tick;
+
 	// Current status of the trigger button. True means "shoot"
 	bool trigger_state;
 	// "New" flag for the trigger button state. Allows weapons to only wait
 	// for the initial button press, and no re-trigger until the button is released.
 	bool trigger_state_read;
 
+	float gun_heat;
 
 public:
 	Handler(Xasin::Audio::TX &audio);
@@ -114,6 +117,13 @@ public:
 	void boop_thread();
 
 	void update_btn(bool new_button_state);
+	void fx_tick();
+
+	float get_gun_heat();
+
+	bool was_shot_tick();
+	TickType_t get_last_shot_tick();
+
 	bool get_btn_state(bool only_fresh = false);
 
 	// Returns true for as long as the player can shoot, i.e. he is

@@ -19,6 +19,11 @@ bool BaseWeapon::can_reload() {
 	return false;
 }
 
+void BaseWeapon::bump_shot_tick() {
+	handler.gun_heat = std::min(280.0F, handler.gun_heat + 30.0F);
+	handler.last_shot_tick = xTaskGetTickCount();
+}
+
 void BaseWeapon::reload_start() {}
 void BaseWeapon::reload_tick() {}
 

@@ -54,6 +54,7 @@ void HeavyWeapon::shot_process() {
 		vTaskDelay(config.shot_delay);
 
 		current_ammo--;
+		bump_shot_tick();
 		if(current_ammo == 0)
 			wants_to_reload = true;
 	}

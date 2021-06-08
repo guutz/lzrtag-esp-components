@@ -67,6 +67,8 @@ void ShotWeapon::shot_process()
 	
 	for(int i = std::max(1, config.salve_count); i != 0; i--) {
 		handler.play(config.shot_sfx);
+		
+		bump_shot_tick();
 		current_ammo--;
 		if(current_ammo == 0)
 			wants_to_reload = true;

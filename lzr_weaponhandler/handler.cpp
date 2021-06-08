@@ -2,7 +2,7 @@
 
 #include <lzrtag/weapon.h>
 
-#define LOG_LOCAL_LEVEL ESP_LOG_DEBUG
+#define LOG_LOCAL_LEVEL ESP_LOG_INFO
 #include "esp_log.h"
 
 const char *handler_tag = "LZR:WPN:Handler";
@@ -18,7 +18,9 @@ Handler::Handler(Xasin::Audio::TX & audio) :
 	audio(audio), previous_source(nullptr), current_source(nullptr),
 	target_weapon(nullptr), current_weapon(nullptr),
 	process_task(0), action_start_tick(0),
-	trigger_state(false), trigger_state_read(false) {
+	last_shot_tick(0),
+	trigger_state(false), trigger_state_read(false),
+	gun_heat(0) {
 }
 
 wait_failure_t Handler::wait_for_trigger(TickType_t max_ticks, bool repress_needed) {
@@ -186,7 +188,7 @@ void Handler::start_thread() {
 	if(process_task != 0)
 		return;
 
-	xTaskCreate(handler_start_thread_func, "LZR::WPN", 4096, this, 4, &process_task);
+	xTaskCreate(handler_start_thread_func, "LZR::WPN", 4096, this, 10, &process_task);
 }
 
 void Handler::update_btn(bool new_button_state) {
@@ -197,6 +199,24 @@ void Handler::update_btn(bool new_button_state) {
 	trigger_state_read = false;
 
 	boop_thread();
+}
+
+void Handler::fx_tick() {
+	if(current_weapon == nullptr)
+		gun_heat *= 0.95F;
+	else
+		gun_heat *= (1 - 0.01F); //(1 - current_weapon->gun_heat_decay);
+}
+
+bool Handler::was_shot_tick() {
+	return (xTaskGetTickCount() - last_shot_tick) < 20;
+}
+TickType_t Handler::get_last_shot_tick() {
+	return last_shot_tick;
+}
+
+float Handler::get_gun_heat() {
+	return std::min(255.0F, std::max(0.0F, gun_heat));
 }
 
 bool Handler::get_btn_state(bool only_fresh) {

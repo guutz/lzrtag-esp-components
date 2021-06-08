@@ -28,6 +28,8 @@ protected:
     virtual void reload_start();
     virtual void reload_tick();
 
+    void bump_shot_tick();
+
     /*! @brief Run the shot process
      *  @details This function must be overwritten by the overloading class
      *      to flesh out the weapon's behaviour. The code here MUST always

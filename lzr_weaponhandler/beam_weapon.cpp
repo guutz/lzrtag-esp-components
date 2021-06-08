@@ -50,6 +50,7 @@ void BeamWeapon::shot_process() {
 			break;
 		
 		current_charge -= 30;
+		bump_shot_tick();
 
 		if(last_source->remaining_runtime() < 30)
 			last_source = handler.play(config.loop_sounds[variant_number]);
