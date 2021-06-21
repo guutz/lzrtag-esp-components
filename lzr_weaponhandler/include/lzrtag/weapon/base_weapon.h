@@ -5,6 +5,8 @@
 
 #include <stdint.h>
 
+#include "handler.h"
+
 namespace LZRTag {
 namespace Weapon {
 
@@ -48,6 +50,8 @@ public:
     virtual int32_t get_max_clip_ammo();
     virtual int32_t get_total_ammo();
 
+    ammo_info_t get_ammo();
+
     /*! Offer this weapon to reload.
      *  Calling this function will offer this weapon to reload.
      *  Most weapons will initiate a reload cycle from this, though
@@ -55,6 +59,8 @@ public:
      *  no ammo left, or they do not use ammo, such as a beam weapon).
      */
     virtual void tempt_reload();
+
+    virtual void apply_vibration(float &vibr);
 };
 
 }

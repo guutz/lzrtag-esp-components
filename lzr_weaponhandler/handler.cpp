@@ -20,7 +20,9 @@ Handler::Handler(Xasin::Audio::TX & audio) :
 	process_task(0), action_start_tick(0),
 	last_shot_tick(0),
 	trigger_state(false), trigger_state_read(false),
-	gun_heat(0) {
+	gun_heat(0),
+	on_shot_func(),
+	can_shoot_func() {
 }
 
 wait_failure_t Handler::wait_for_trigger(TickType_t max_ticks, bool repress_needed) {
@@ -233,6 +235,9 @@ bool Handler::can_shoot() {
 	if(current_weapon != target_weapon)
 		return false;
 
+	if(can_shoot_func && !can_shoot_func())
+		return false;
+
 	return current_weapon->can_shoot();
 }
 
@@ -249,6 +254,12 @@ void Handler::tempt_reload() {
 	
 	current_weapon->tempt_reload();
 }
+ammo_info_t Handler::get_ammo() {
+	if(current_weapon == nullptr)
+		return {};
+
+	return current_weapon->get_ammo();
+}
 
 void Handler::set_weapon(BaseWeapon *next_weapon) {
 	if(next_weapon == target_weapon)
@@ -263,6 +274,11 @@ bool Handler::weapon_equipped() {
 		return false;
 
 	return current_weapon == target_weapon;
+}
+
+void Handler::apply_vibration(float &vibr) {
+	if(current_weapon)
+		current_weapon->apply_vibration(vibr);
 }
 
 }

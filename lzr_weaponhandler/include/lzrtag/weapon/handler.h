@@ -9,8 +9,10 @@
 
 #include <xasin/audio.h>
 
+#include <functional>
+
 #undef LOG_LOCAL_LEVEL
-#define LOG_LOCAL_LEVEL ESP_LOG_DEBUG
+#define LOG_LOCAL_LEVEL ESP_LOG_INFO
 #include <esp_log.h>
 
 namespace LZRTag {
@@ -21,6 +23,12 @@ enum wait_failure_t {
 	TIMEOUT,
 	CANNOT_SHOOT,
 	INVALID_CONFIG,
+};
+
+struct ammo_info_t {
+	int32_t current_ammo;
+	int32_t clipsize;
+	int32_t  total_ammo;
 };
 
 class BaseWeapon;
@@ -124,6 +132,8 @@ public:
 	bool was_shot_tick();
 	TickType_t get_last_shot_tick();
 
+	std::function<void (void)> on_shot_func;
+
 	bool get_btn_state(bool only_fresh = false);
 
 	// Returns true for as long as the player can shoot, i.e. he is
@@ -132,6 +142,8 @@ public:
 	// Any weapon code MUST exit the weapon handling function ASAP when
 	// this is false.
 	bool can_shoot();
+
+	std::function<bool (void)> can_shoot_func;
 
 	/*! @brief Returns true if weapons have to use ammo but have
 	 *  infinite clips.
@@ -143,9 +155,12 @@ public:
 	bool infinite_ammo();
 
 	void tempt_reload();
+	ammo_info_t get_ammo();
 
 	void set_weapon(BaseWeapon *next_weapon);
 	bool weapon_equipped();
+
+	void apply_vibration(float &vibr);
 };
 
 }

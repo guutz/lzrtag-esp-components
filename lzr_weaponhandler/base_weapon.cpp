@@ -22,6 +22,9 @@ bool BaseWeapon::can_reload() {
 void BaseWeapon::bump_shot_tick() {
 	handler.gun_heat = std::min(280.0F, handler.gun_heat + 30.0F);
 	handler.last_shot_tick = xTaskGetTickCount();
+
+	if(handler.on_shot_func)
+		handler.on_shot_func();
 }
 
 void BaseWeapon::reload_start() {}
@@ -42,12 +45,37 @@ int32_t BaseWeapon::get_total_ammo() {
 	return 1;
 }
 
+ammo_info_t BaseWeapon::get_ammo() {
+	return {
+		get_clip_ammo(),
+		get_max_clip_ammo(),
+		get_total_ammo(),
+	};
+}
+
 void BaseWeapon::tempt_reload() {
 	if(!can_reload())
 		return;
 	
 	wants_to_reload = true;
 	handler.boop_thread();
+}
+
+void BaseWeapon::apply_vibration(float &vibr) {
+	auto shot_time = xTaskGetTickCount() - handler.get_last_shot_tick();
+
+	static float intensity = 0;
+
+	intensity *= 0.94;
+
+	if(shot_time < 40/portTICK_PERIOD_MS)
+		vibr = 1;
+	else if(shot_time < 150/portTICK_PERIOD_MS) {
+		intensity = 0.4;
+		vibr = 0;
+	}
+
+	vibr = (1-intensity) * vibr + intensity;
 }
 
 }

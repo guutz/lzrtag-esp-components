@@ -56,6 +56,9 @@ void BeamWeapon::shot_process() {
 			last_source = handler.play(config.loop_sounds[variant_number]);
 	}
 
+	if(current_charge < 100)
+		wants_to_reload = true;
+
 	last_source->fade_out();
 
 	vTaskDelay(handler.play(config.end_sounds[variant_number])->remaining_runtime());
