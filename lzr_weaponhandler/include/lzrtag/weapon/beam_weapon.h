@@ -1,8 +1,8 @@
-
 #ifndef __LZRTAG_WEAPON_BEAM_H__
 #define __LZRTAG_WEAPON_BEAM_H__
 
 #include <lzrtag/weapon.h>
+#include <xasin/audio/ByteCassette.h>
 
 namespace LZRTag {
 namespace Weapon {
@@ -13,11 +13,11 @@ struct beam_weapon_config {
 
 	TickType_t beam_start_delay;
 
-	Xasin::Audio::opus_audio_bundle_t reload_sound;
+	Xasin::Audio::bytecassette_data_t reload_sound;
 
-	Xasin::Audio::OpusCassetteCollection start_sounds;
-	Xasin::Audio::OpusCassetteCollection loop_sounds;
-	Xasin::Audio::OpusCassetteCollection end_sounds;
+	Xasin::Audio::ByteCassetteCollection start_sounds;
+	Xasin::Audio::ByteCassetteCollection loop_sounds;
+	Xasin::Audio::ByteCassetteCollection end_sounds;
 };
 
 class BeamWeapon : public BaseWeapon
