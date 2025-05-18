@@ -1,9 +1,8 @@
-
-
 #ifndef __LZRTAG_WEAPON_TEST_H__
 #define __LZRTAG_WEAPON_TEST_H__
 
 #include <lzrtag/weapon.h>
+#include <xasin/audio/ByteCassette.h>
 
 namespace LZRTag {
 namespace Weapon {
@@ -15,8 +14,8 @@ struct shot_weapon_config {
 	int32_t equip_time;
 	int32_t reload_time;
 
-	Xasin::Audio::opus_audio_bundle_t reload_sfx;
-	Xasin::Audio::OpusCassetteCollection shot_sfx;
+	Xasin::Audio::bytecassette_data_t reload_sfx;
+	Xasin::Audio::ByteCassetteCollection shot_sfx;
 
 	TickType_t shot_delay;
 	int salve_count;
